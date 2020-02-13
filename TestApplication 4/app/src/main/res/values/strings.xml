@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">TestApplication</string>
+    <string name="LoginPageMessage">Please Type In Your Information To Login</string>
+    <string name="EmailHint">Email</string>
+    <string name="PasswordHint">Password</string>
+    <string name="LoginButtonName">Login</string>
+    <string name="ErrorLoginPageMessage">Your Username/Password is incorrect</string>
+    <string name="LogoutButtonLabel">Logout</string>
+    <string name="Submit_button_title">Submit</string>
+    <string name="UserNameHint">Username</string>
+</resources>
