@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import DataModels.Questions;
 import DataModels.Quiz;
@@ -33,17 +35,15 @@ public class listOfQuizActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_of_quiz);
-        final String userAns[] = new String[2];
-        final ArrayList<String> quest1Ans = new ArrayList<>(Arrays.asList(new String[]{"4","1", "2", "3"}));
-        Questions question1 = new Questions("What is 2+2?",quest1Ans);
+        Quiz quiz1 = OptionPicked.getInstance().getQuiz();
+        final ArrayList<String> correctAns = new ArrayList<>();
+        for(Questions q:quiz1.getListOfQuestions()){
+            correctAns.add(q.getAnswers().get(0));
+        }
+        final String userAns[] = new String[quiz1.getListOfQuestions().size()];
 
 
-        final ArrayList<String> quest2ans = new ArrayList<>(Arrays.asList(new String[]{"2","1", "4", "3"}));
-        Questions question2 = new Questions("What is 1+1?",quest2ans);
-        ArrayList<Questions> questions1 = new ArrayList<>();
-        questions1.add(question1);
-        questions1.add(question2);
-        Quiz quiz1 = new Quiz("Math",questions1);
+
 
 
         LinearLayout linearLayout = new LinearLayout(this);
@@ -51,6 +51,7 @@ public class listOfQuizActivity extends AppCompatActivity {
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setGravity(Gravity.CENTER);
         linearLayout.setPadding(200,80,80,200);
+        final HashMap<RadioGroup,Integer> buttons = new HashMap<>();
         int RBCount = 0;
 
         for( int i = 0; i < quiz1.getListOfQuestions().size(); i++ )
@@ -71,6 +72,7 @@ public class listOfQuizActivity extends AppCompatActivity {
                 rg.addView(rb);
                 RBCount++;
             }
+            buttons.put(rg,i);
             linearLayout.addView(rg);//you add the whole RadioGroup to the layout
             rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
             {
@@ -80,13 +82,16 @@ public class listOfQuizActivity extends AppCompatActivity {
                     RadioButton rb=(RadioButton)findViewById(checkedId);
                     // 0-3 index 0, meaning question 1
                     // 4-7 index 1, meaning question 2
-                    if(rb.getId() < 4 && rb.getId() >= 0){
+                    //if(rb.getId() < 4 && rb.getId() >= 0){
                         //Toast.makeText(getApplicationContext(),"Question 1:" + String.valueOf(rb.getId()),Toast.LENGTH_SHORT).show();
-                        userAns[0]= rb.getText().toString();
-                    }else if(rb.getId() >= 4 && rb.getId() <8){
+                    //    userAns[0]= rb.getText().toString();
+                    //}else if(rb.getId() >= 4 && rb.getId() <8){
                         //Toast.makeText(getApplicationContext(),"Question 2:" + String.valueOf(rb.getId()),Toast.LENGTH_SHORT).show();
-                        userAns[1]= rb.getText().toString();
-                    }
+                    //   userAns[1]=
+                    //}
+                    int getIndex = buttons.get(group);
+                    Log.d("[Question]", ""+getIndex);
+                    userAns[getIndex] = rb.getText().toString();
                     //Toast.makeText(getApplicationContext(), rb.getText(), Toast.LENGTH_SHORT).show();
                 }
             });
@@ -99,15 +104,15 @@ public class listOfQuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 double count = 0;
-                if(userAns[0].equalsIgnoreCase(quest1Ans.get(0))){
-                    count++;
+                for(int i =0;i<userAns.length;++i){
+                    Log.d("[u:a]", userAns[i] + " : " +  correctAns.get(i));
+                    if(userAns[i].equalsIgnoreCase(correctAns.get(i))){
+                        count++;
+                    }
                 }
-                if(userAns[1].equalsIgnoreCase(quest2ans.get(0))){
-                    count++;
-                }
+
                 System.out.println(count);
-                System.out.println(quest2ans.get(0));
-                Toast.makeText(getApplicationContext(),"Percent of correct: " +((count/2)*100) + "%",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Percent of correct: " +((count/correctAns.size())*100) + "%",Toast.LENGTH_SHORT).show();
 
             }
         });

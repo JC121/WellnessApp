@@ -138,7 +138,7 @@ public class FrontPageActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     Log.e("[Quiz]",tempQuiz.toString());
-
+                    OptionPicked.getInstance().setQuiz(tempQuiz);
                     startActivity(new Intent(FrontPageActivity.this, listOfQuizActivity.class));
 
                 }
